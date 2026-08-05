@@ -1,0 +1,19 @@
+{
+  "name": "clio-toolkit",
+  "description": "Byrd Law Group's Clio Manage toolkit: connect to Clio, run deadline-first matter analysis, open new MVA matters, stand up the standard MVA pre-litigation workflow (tasks + Georgia deadlines), apply reusable task/deadline workflow templates to any matter, and upload or edit documents in Clio's document management.",
+  "version": "1.2.0",
+  "author": {
+    "name": "Byrd Law Group",
+    "email": "byrd.deandrea@gmail.com"
+  },
+  "keywords": [
+    "clio",
+    "legal",
+    "matters",
+    "personal-injury",
+    "mva",
+    "deadlines",
+    "practice-management",
+    "documents"
+  ]
+}

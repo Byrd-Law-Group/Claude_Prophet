@@ -1,0 +1,48 @@
+{
+  "name": "slip-and-fall",
+  "description": "Premises liability (slip and fall) pre-litigation workflow. Emphasizes fast evidence preservation (video is often overwritten within days) and Georgia PI/ante litem deadlines.",
+  "practice_area": "Personal Injury — Premises Liability",
+  "anchor_date": "open_date",
+  "reminder_offsets_days": [180, 90, 60, 30],
+  "date_inputs": [
+    {"key": "open_date", "label": "Matter open / intake date", "default": "today"},
+    {"key": "injury_date", "label": "Date of the fall / injury", "required": true}
+  ],
+  "flags": [
+    {"key": "defendant", "label": "Property owner type", "type": "enum", "choices": ["private", "municipal", "county", "state"], "default": "private"},
+    {"key": "minor", "label": "Minor's claim (SOL tolled)", "type": "bool", "default": false}
+  ],
+  "deadlines": [
+    {"key": "sol_pi", "label": "Statute of Limitations — Personal Injury", "authority": "O.C.G.A. § 9-3-33", "basis": "injury_date", "months": 24, "applies": "always", "skip_if": "minor"},
+    {"key": "ante_municipal", "label": "Ante Litem Notice — Municipality", "authority": "O.C.G.A. § 36-33-5", "basis": "injury_date", "months": 6, "applies": "defendant==municipal"},
+    {"key": "ante_county", "label": "Ante Litem Notice — County", "authority": "O.C.G.A. § 36-11-1", "basis": "injury_date", "months": 12, "applies": "defendant==county"},
+    {"key": "ante_state", "label": "Ante Litem Notice — State of Georgia", "authority": "O.C.G.A. § 50-21-26", "basis": "injury_date", "months": 12, "applies": "defendant==state"}
+  ],
+  "tasks": [
+    {"phase": 1, "name": "Screening interview: where, how, and why the fall happened; hazard and notice facts", "owner": "intake", "offset_days": 0, "priority": "High"},
+    {"phase": 1, "name": "Run conflict check against property owner, manager, and tenant", "owner": "intake", "offset_days": 0, "priority": "High"},
+    {"phase": 1, "name": "Attorney go/no-go decision on liability and notice", "owner": "attorney", "offset_days": 1, "priority": "High"},
+    {"phase": 1, "name": "Send and execute contingency fee agreement and HIPAA authorizations", "owner": "case_manager", "offset_days": 1, "priority": "High"},
+    {"phase": 1, "name": "GOVERNMENT PROPERTY — ante litem required; escalate to attorney TODAY", "owner": "attorney", "offset_days": 0, "priority": "High", "applies_if": "defendant!=private"},
+
+    {"phase": 2, "name": "Send spoliation letter demanding preservation of surveillance video and incident report (video is often overwritten within days)", "owner": "attorney", "offset_days": 0, "priority": "High"},
+    {"phase": 2, "name": "Send Letter of Representation to property owner and its insurer", "owner": "case_manager", "offset_days": 2, "priority": "High"},
+    {"phase": 2, "name": "Request incident/accident report and any 911/EMS records", "owner": "case_manager", "offset_days": 3, "priority": "Normal"},
+    {"phase": 2, "name": "Photograph the hazard, scene, footwear, and injuries; return for daylight/condition photos", "owner": "case_manager", "offset_days": 3, "priority": "Normal"},
+    {"phase": 2, "name": "Identify and interview witnesses and store employees", "owner": "case_manager", "offset_days": 5, "priority": "Normal"},
+    {"phase": 2, "name": "Investigate prior similar incidents / hazard history at the location", "owner": "case_manager", "offset_days": 10, "priority": "Normal"},
+
+    {"phase": 3, "name": "Confirm client is treating; set up provider and diagnosis tracking", "owner": "case_manager", "offset_days": 7, "priority": "Normal"},
+    {"phase": 3, "name": "Monthly client check-in until MMI", "owner": "case_manager", "offset_days": 30, "priority": "Normal"},
+    {"phase": 3, "name": "Confirm MMI / release from care", "owner": "case_manager", "trigger": "Client reaches MMI", "priority": "Normal"},
+
+    {"phase": 4, "name": "Request all medical records and itemized bills (HIPAA)", "owner": "case_manager", "trigger": "Client reaches MMI", "priority": "High"},
+    {"phase": 4, "name": "Identify liens and calculate total special damages", "owner": "case_manager", "trigger": "Records received", "priority": "High"},
+
+    {"phase": 5, "name": "Assemble demand package and draft valuation for attorney review", "owner": "case_manager", "trigger": "Records complete", "priority": "High"},
+    {"phase": 5, "name": "Attorney approves demand; send and calendar response deadline", "owner": "attorney", "trigger": "Demand drafted", "priority": "High"},
+
+    {"phase": 6, "name": "Track adjuster response; document offers; get written client authority before accepting", "owner": "case_manager", "trigger": "Demand sent", "priority": "High"},
+    {"phase": 7, "name": "Attorney reviews release; resolve liens; prepare disbursement for approval", "owner": "attorney", "trigger": "Settlement accepted", "priority": "High"}
+  ]
+}

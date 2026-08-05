@@ -1,0 +1,72 @@
+{
+  "name": "mva-prelit",
+  "description": "Motor vehicle accident (MVA) pre-litigation workflow: intake-to-demand tasks plus Georgia statutory deadlines (SOL, ante litem) with stacked reminders.",
+  "practice_area": "Personal Injury — MVA",
+  "anchor_date": "open_date",
+  "reminder_offsets_days": [180, 90, 60, 30],
+  "date_inputs": [
+    {"key": "open_date", "label": "Matter open / intake date (task offsets count from here)", "default": "today"},
+    {"key": "injury_date", "label": "Date of injury (drives PI SOL and ante litem)", "required": true},
+    {"key": "loss_date", "label": "Date of property loss (drives PD SOL)", "default_from": "injury_date"}
+  ],
+  "flags": [
+    {"key": "defendant", "label": "At-fault party type", "type": "enum", "choices": ["private", "municipal", "county", "state"], "default": "private"},
+    {"key": "commercial_truck", "label": "Commercial truck involved", "type": "bool", "default": false},
+    {"key": "minor", "label": "Minor's claim (SOL tolled)", "type": "bool", "default": false}
+  ],
+  "deadlines": [
+    {"key": "sol_pi", "label": "Statute of Limitations — Personal Injury", "authority": "O.C.G.A. § 9-3-33", "basis": "injury_date", "months": 24, "applies": "always", "skip_if": "minor"},
+    {"key": "sol_pd", "label": "Statute of Limitations — Property Damage", "authority": "O.C.G.A. § 9-3-31", "basis": "loss_date", "months": 48, "applies": "always"},
+    {"key": "ante_municipal", "label": "Ante Litem Notice — Municipality", "authority": "O.C.G.A. § 36-33-5", "basis": "injury_date", "months": 6, "applies": "defendant==municipal"},
+    {"key": "ante_county", "label": "Ante Litem Notice — County", "authority": "O.C.G.A. § 36-11-1", "basis": "injury_date", "months": 12, "applies": "defendant==county"},
+    {"key": "ante_state", "label": "Ante Litem Notice — State of Georgia", "authority": "O.C.G.A. § 50-21-26", "basis": "injury_date", "months": 12, "applies": "defendant==state"}
+  ],
+  "tasks": [
+    {"phase": 1, "name": "Log lead in Clio and capture lead source", "owner": "intake", "offset_days": 0, "priority": "High"},
+    {"phase": 1, "name": "Complete screening interview and record accident facts, parties, and insurance", "owner": "intake", "offset_days": 0, "priority": "High"},
+    {"phase": 1, "name": "Run conflict check against all parties", "owner": "intake", "offset_days": 0, "priority": "High"},
+    {"phase": 1, "name": "Attorney go/no-go decision on viability", "owner": "attorney", "offset_days": 1, "priority": "High"},
+    {"phase": 1, "name": "Send and execute contingency fee / retainer agreement", "owner": "case_manager", "offset_days": 1, "priority": "High"},
+    {"phase": 1, "name": "Obtain signed HIPAA authorizations and record releases", "owner": "case_manager", "offset_days": 2, "priority": "High"},
+    {"phase": 1, "name": "Advise client: no contact with at-fault adjuster, no social media posts", "owner": "case_manager", "offset_days": 1, "priority": "Normal"},
+    {"phase": 1, "name": "Open matter in Clio with client, parties, insurance, and MVA type", "owner": "case_manager", "offset_days": 1, "priority": "High"},
+    {"phase": 1, "name": "Assign case manager and supervising attorney of record", "owner": "case_manager", "offset_days": 1, "priority": "Normal"},
+    {"phase": 1, "name": "GOVERNMENT PARTY — ante litem required; escalate to supervising attorney TODAY", "owner": "attorney", "offset_days": 0, "priority": "High", "applies_if": "defendant!=private"},
+
+    {"phase": 2, "name": "Build standard Clio folder structure (correspondence, medical, insurance, evidence, liens, settlement)", "owner": "case_manager", "offset_days": 2, "priority": "Normal"},
+    {"phase": 2, "name": "Send Letters of Representation to client's carrier and at-fault carrier", "owner": "case_manager", "offset_days": 3, "priority": "High"},
+    {"phase": 2, "name": "Open claims; record claim numbers and adjuster contacts in Clio", "owner": "case_manager", "offset_days": 4, "priority": "Normal"},
+    {"phase": 2, "name": "Request at-fault policy limits and client coverages (UM/UIM, MedPay, PIP)", "owner": "case_manager", "offset_days": 4, "priority": "High"},
+    {"phase": 2, "name": "Order police/accident report and crash photos from investigating agency", "owner": "case_manager", "offset_days": 3, "priority": "High"},
+    {"phase": 2, "name": "Photograph client's vehicle damage, scene, and visible injuries", "owner": "case_manager", "offset_days": 5, "priority": "Normal"},
+    {"phase": 2, "name": "Identify and obtain witness statements while memories are fresh", "owner": "case_manager", "offset_days": 7, "priority": "Normal"},
+    {"phase": 2, "name": "COMMERCIAL TRUCK — send spoliation / evidence-preservation letter (ELD, telematics, dashcam, DQ file) and notify attorney", "owner": "attorney", "offset_days": 1, "priority": "High", "applies_if": "commercial_truck"},
+    {"phase": 2, "name": "Coordinate property damage claim, appraisal/total-loss valuation, and rental (separate track)", "owner": "case_manager", "offset_days": 3, "priority": "Normal"},
+
+    {"phase": 3, "name": "Confirm client is treating and following provider instructions", "owner": "case_manager", "offset_days": 7, "priority": "Normal"},
+    {"phase": 3, "name": "Set up provider / date-of-service / diagnosis tracking in Clio", "owner": "case_manager", "offset_days": 7, "priority": "Normal"},
+    {"phase": 3, "name": "Coordinate MedPay / PIP / health insurance and anticipate liens early", "owner": "case_manager", "offset_days": 10, "priority": "Normal"},
+    {"phase": 3, "name": "First monthly client check-in (repeat monthly until MMI)", "owner": "case_manager", "offset_days": 30, "priority": "Normal"},
+    {"phase": 3, "name": "Monitor treatment for gaps; document and flag to attorney", "owner": "case_manager", "trigger": "Ongoing during treatment", "priority": "Normal"},
+    {"phase": 3, "name": "Confirm client reaches MMI or is released from care (triggers Phase 4)", "owner": "case_manager", "trigger": "Client reaches MMI", "priority": "Normal"},
+
+    {"phase": 4, "name": "Request all medical records and itemized bills from every provider (HIPAA)", "owner": "case_manager", "trigger": "Client reaches MMI", "priority": "High"},
+    {"phase": 4, "name": "Request wage-loss documentation if lost income is claimed", "owner": "case_manager", "trigger": "Client reaches MMI", "priority": "Normal"},
+    {"phase": 4, "name": "Identify every lien and reimbursement interest (health/ERISA, hospital, Medicare/Medicaid, MedPay)", "owner": "case_manager", "trigger": "Records received", "priority": "High"},
+    {"phase": 4, "name": "Calculate total special damages (medical + wage loss + out-of-pocket)", "owner": "case_manager", "trigger": "Records complete", "priority": "Normal"},
+
+    {"phase": 5, "name": "Assemble demand package (liability summary, medical narrative, records, bills, wage loss, photos)", "owner": "case_manager", "trigger": "Records complete / at MMI", "priority": "High"},
+    {"phase": 5, "name": "Draft case valuation for attorney review", "owner": "case_manager", "trigger": "Demand prep", "priority": "High"},
+    {"phase": 5, "name": "SERIOUS/TRUCKING — prepare time-limited demand under O.C.G.A. § 9-11-67.1 with attorney-approved terms", "owner": "attorney", "trigger": "Demand prep", "priority": "High", "applies_if": "commercial_truck"},
+    {"phase": 5, "name": "Supervising attorney reviews and approves demand (no demand goes out without sign-off)", "owner": "attorney", "trigger": "Demand drafted", "priority": "High"},
+    {"phase": 5, "name": "Send approved demand and calendar the response deadline in Clio", "owner": "case_manager", "trigger": "Demand approved", "priority": "High"},
+
+    {"phase": 6, "name": "Track demand deadline and adjuster response; follow up promptly", "owner": "case_manager", "trigger": "Demand sent", "priority": "Normal"},
+    {"phase": 6, "name": "Document every offer/counter; obtain written client authority before countering or accepting", "owner": "case_manager", "trigger": "Negotiation", "priority": "High"},
+
+    {"phase": 7, "name": "Attorney reviews release before client signs", "owner": "attorney", "trigger": "Settlement accepted", "priority": "High"},
+    {"phase": 7, "name": "Negotiate and resolve all liens; obtain final reduced payoffs in writing", "owner": "case_manager", "trigger": "Settlement accepted", "priority": "High"},
+    {"phase": 7, "name": "Prepare settlement statement / disbursement sheet for attorney approval", "owner": "case_manager", "trigger": "Liens resolved", "priority": "High"},
+    {"phase": 7, "name": "Review disbursement with client, obtain signature, and disburse funds/liens/costs/fee", "owner": "case_manager", "trigger": "Disbursement approved", "priority": "High"}
+  ]
+}

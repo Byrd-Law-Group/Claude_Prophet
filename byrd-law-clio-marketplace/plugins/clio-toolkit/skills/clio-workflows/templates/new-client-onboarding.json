@@ -1,0 +1,24 @@
+{
+  "name": "new-client-onboarding",
+  "description": "Generic new-client / new-matter onboarding checklist. No statutory deadlines — a simple, practice-area-agnostic task set for opening any matter cleanly. A good starting point to copy and adapt.",
+  "practice_area": "General",
+  "anchor_date": "open_date",
+  "date_inputs": [
+    {"key": "open_date", "label": "Matter open date", "default": "today"}
+  ],
+  "flags": [
+    {"key": "contingency", "label": "Contingency-fee matter", "type": "bool", "default": false}
+  ],
+  "tasks": [
+    {"name": "Run conflict check against all parties", "owner": "intake", "offset_days": 0, "priority": "High"},
+    {"name": "Send and execute engagement / fee agreement", "owner": "case_manager", "offset_days": 1, "priority": "High"},
+    {"name": "Send and obtain signed contingency fee agreement", "owner": "case_manager", "offset_days": 1, "priority": "High", "applies_if": "contingency"},
+    {"name": "Collect client ID, contact info, and preferred communication method", "owner": "case_manager", "offset_days": 1, "priority": "Normal"},
+    {"name": "Open matter in Clio and set responsible attorney", "owner": "case_manager", "offset_days": 1, "priority": "High"},
+    {"name": "Build standard Clio folder structure", "owner": "case_manager", "offset_days": 2, "priority": "Normal"},
+    {"name": "Send new-client welcome letter setting expectations and next steps", "owner": "case_manager", "offset_days": 3, "priority": "Normal"},
+    {"name": "Calendar all known deadlines for the matter", "owner": "case_manager", "offset_days": 1, "priority": "High"},
+    {"name": "Schedule initial strategy call with the responsible attorney", "owner": "case_manager", "offset_days": 5, "priority": "Normal"},
+    {"name": "30-day file review to confirm intake is complete", "owner": "attorney", "offset_days": 30, "priority": "Normal"}
+  ]
+}
