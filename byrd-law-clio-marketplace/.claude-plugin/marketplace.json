@@ -6,18 +6,18 @@
   },
   "metadata": {
     "description": "Byrd Law Group internal marketplace for Clio Manage tooling.",
-    "version": "1.4.0"
+    "version": "1.5.0"
   },
   "plugins": [
     {
       "name": "clio-toolkit",
       "source": "./plugins/clio-toolkit",
-      "description": "Connect to Clio, analyze matters (deadline/task risk), open new MVA matters, run the MVA pre-litigation intake workflow, apply reusable task/deadline workflow templates to any matter, upload/edit/revise documents in Clio's document management, and draft client text updates from matter notes. Bundles the clio, clio-documents, clio-client-update, clio-matter-analysis, clio-mva-new-matter, clio-mva-intake, and clio-workflows skills.",
-      "version": "1.4.0",
+      "description": "A plaintiff's-PI Clio toolkit: matter analysis, a firm-wide deadline/SOL radar, a stale-matter pulse, new-matter intake and workflow templates, document upload/edit, client text updates, PI demand letters, standard correspondence (LOR/HIPAA/spoliation), and medical bills/liens & special-damages tracking. Bundles clio, clio-matter-analysis, clio-deadline-radar, clio-matter-pulse, clio-mva-new-matter, clio-mva-intake, clio-workflows, clio-documents, clio-client-update, clio-medical-tracker, clio-demand, and clio-letters.",
+      "version": "1.5.0",
       "author": {
         "name": "Byrd Law Group"
       },
-      "keywords": ["clio", "legal", "mva", "matters", "deadlines", "intake", "documents"]
+      "keywords": ["clio", "legal", "mva", "personal-injury", "matters", "deadlines", "intake", "documents", "demand", "medical-liens"]
     }
   ]
 }

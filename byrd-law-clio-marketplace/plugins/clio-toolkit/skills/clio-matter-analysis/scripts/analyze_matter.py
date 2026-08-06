@@ -61,7 +61,7 @@ def api_get(path, params=None, connection=None):
 
     merged = []
     single = None
-    while url:
+    while True:
         req = urllib.request.Request(url, headers=headers)
         with urllib.request.urlopen(req, timeout=60) as resp:
             payload = json.load(resp)
@@ -70,8 +70,17 @@ def api_get(path, params=None, connection=None):
             merged.extend(data)
         else:
             single = data
+        # Clio's `next` URL points at app.clio.com and bypasses the Maton
+        # gateway's OAuth injection (page 2+ would 401). Re-request through the
+        # gateway with the page_token instead of following that URL directly.
         nxt = (payload.get("meta") or {}).get("paging", {}).get("next")
-        url = nxt
+        if not nxt:
+            break
+        tok = urllib.parse.parse_qs(urllib.parse.urlparse(nxt).query).get("page_token")
+        if not tok:
+            break
+        params["page_token"] = tok[0]
+        url = f"{BASE}{path}?" + urllib.parse.urlencode(params, safe="{},")
     return single if single is not None else merged
 
 
