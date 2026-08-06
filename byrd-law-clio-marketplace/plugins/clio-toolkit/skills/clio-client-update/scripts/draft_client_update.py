@@ -99,22 +99,23 @@ def main():
 
     matter_id = resolve_matter(args)
 
+    # Clio supports only ONE level of field nesting, so keep the nested client
+    # shallow here and fetch the contact's phone numbers separately below.
     matter = get(f"/matters/{matter_id}.json", {
-        "fields": "id,display_number,description,status,open_date,"
-                  "client{id,name,primary_phone_number,"
-                  "phone_numbers{name,number,default_number}}",
+        "fields": "id,display_number,description,status,open_date,client{id,name}",
     }).get("data", {})
 
     client = matter.get("client") or {}
-    # If phone wasn't nested, fetch the contact directly.
-    if client.get("id") and not (client.get("phone_numbers")
-                                 or client.get("primary_phone_number")):
+    # Fetch the contact directly to get phone numbers (phone_numbers{...} is one
+    # level of nesting on the contacts endpoint, which Clio does allow).
+    if client.get("id"):
         client = get(f"/contacts/{client['id']}.json", {
             "fields": "id,name,primary_phone_number,"
                       "phone_numbers{name,number,default_number}",
         }).get("data", client)
 
     note_params = {
+        "type": "Matter",  # Clio requires the parent type on /notes
         "matter_id": matter_id,
         "fields": "id,subject,detail,date,created_at",
         "limit": max(1, args.limit),
