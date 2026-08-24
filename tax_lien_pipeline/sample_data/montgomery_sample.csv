@@ -1,0 +1,8 @@
+Parcel Number,Property Address,City,State,Zip,Owner Name,Mailing Address,Years Delinquent,Total Due,Market Value,Owner Occupied,Mortgage,Foreclosure Status,Phone,Email
+R72-1234-5678,412 Huffman Ave,Dayton,OH,45403,"SMITH, JOHN",412 Huffman Ave Dayton OH 45403,2,6420,78500,Y,N,none,937-555-0142,
+R72-2345-6789,88 Wroe Ave,Dayton,OH,45402,"JONES, MARIA",5521 Far Hills Ave Dayton OH 45429,3,11250,64000,N,Y,none,937-555-0177,mjones@example.com
+R72-3456-7890,1907 Home Ave,Dayton,OH,45417,"WILLIAMS, ROBERT L",1907 Home Ave Dayton OH 45417,1,3180,52000,Y,N,none,,
+R72-4567-8901,233 Cambridge Ave,Dayton,OH,45406,"DAVIS, LINDA",PO Box 441 Trotwood OH 45426,4,15800,120000,N,N,pending,937-555-0193,
+R72-5678-9012,600 Xenia Ave,Dayton,OH,45410,"BROWN FAMILY TRUST",600 Xenia Ave Dayton OH 45410,2,8940,95000,N,Y,none,937-555-0210,
+R72-6789-0123,142 Groveland Ave,Dayton,OH,45417,"GARCIA, CARLOS",142 Groveland Ave Dayton OH 45417,5,21400,41000,Y,N,completed,937-555-0166,
+R72-7890-1234,75 Notre Dame Ave,Dayton,OH,45404,"MILLER, SUSAN",75 Notre Dame Ave Dayton OH 45404,1,2650,68000,N,N,none,937-555-0188,

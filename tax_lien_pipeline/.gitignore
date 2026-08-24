@@ -1,0 +1,6 @@
+# Local lead database — contains homeowner PII, never commit
+leads.db
+*.db
+__pycache__/
+*.pyc
+.env
