@@ -95,6 +95,18 @@ CALLBACK_NUMBER=+1937XXXXXXX
 2. Attorney review of your Ohio equity-purchaser disclosures and consent language.
 3. Legitimate lead + skip-trace data sources.
 
+## Tests
+Stdlib `unittest` — no dependencies. From `tax_lien_pipeline/`:
+```bash
+python3 -m unittest discover -s tests
+```
+The suite pins the compliance gate (`can_contact`): opt-out and suppression
+blocking, the mail-only default for unknown-DNC numbers, calling-hour and
+attempt-cap enforcement, and that queued previews never count as attempts. It
+also covers phone normalization (suppression must match regardless of
+formatting) and the importer's alias mapping, priority scoring, Montgomery
+native format, and enrich-don't-clobber merge.
+
 ## Files
 ```
 tax_lien_pipeline/
@@ -107,5 +119,6 @@ tax_lien_pipeline/
 │   ├── compliance.py  # DNC scrub, calling hours, opt-out — the gate
 │   ├── outreach.py    # SMS + call-script drafting
 │   └── messaging.py   # Twilio SMS + click-to-dial (stdlib urllib)
+├── tests/test_pipeline.py   # compliance-gate + importer regression tests
 └── sample_data/montgomery_sample.csv
 ```
