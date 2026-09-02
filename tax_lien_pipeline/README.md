@@ -54,11 +54,14 @@ python3 cli.py draft 1          # preview the SMS + call script for lead #1
 
 ### Eligibility & the compliance gate
 After `scrub`, each lead is `call_text`, `mail_only`, or `do_not_contact`.
-Because there is **no live National DNC check wired in yet**, a number with
-unknown DNC status defaults to `mail_only` — it will **not** call/text until you
-either wire a DNC vendor into `tlp/compliance.py:scrub_number` **or** record a
-lawful `consent` basis. `can_contact()` is the single gate every send passes
-through; there are no code overrides for opt-outs or calling hours.
+DNC scrubbing is wired to **The Blacklist Alliance** (`tlp/dnc.py`): set
+`BLACKLIST_API_KEY` and each number is checked against DNC + known-litigator
+lists → `clear` (callable), `listed` (mail-only), or `unknown`. **Without a key
+— or on any vendor error — the number stays `unknown` and defaults to
+`mail_only`**; it will not call/text until the vendor clears it **or** you
+record a lawful `consent` basis. This fail-safe means an outage can never open a
+contact path. `can_contact()` is the single gate every send passes through;
+there are no code overrides for opt-outs or calling hours.
 
 ## Getting the leads (Montgomery County, OH)
 Export/download delinquent + owner data, then `import` the CSV:
@@ -90,8 +93,10 @@ CALLBACK_NUMBER=+1937XXXXXXX
   auto-suppress the number and flag the lead; other replies are logged.
 
 ## Still your responsibility before live outreach
-1. A DNC scrubbing subscription/vendor (National DNC needs a paid SAN) wired into
-   `scrub_number`, or documented consent per lead.
+1. A **Blacklist Alliance** account + `BLACKLIST_API_KEY` (the integration is
+   already wired into `scrub_number` via `tlp/dnc.py`), or documented consent
+   per lead. Confirm current pricing/coverage with the vendor, and have your
+   attorney bless the vendor choice.
 2. Attorney review of your Ohio equity-purchaser disclosures and consent language.
 3. Legitimate lead + skip-trace data sources.
 
@@ -105,7 +110,10 @@ blocking, the mail-only default for unknown-DNC numbers, calling-hour and
 attempt-cap enforcement, and that queued previews never count as attempts. It
 also covers phone normalization (suppression must match regardless of
 formatting) and the importer's alias mapping, priority scoring, Montgomery
-native format, and enrich-don't-clobber merge.
+native format, and enrich-don't-clobber merge. A second suite
+(`tests/test_dnc.py`) pins the Blacklist Alliance scrub's fail-safe: a missing
+key, HTTP error, network exception, or unrecognized payload must all resolve to
+`unknown` — never a false `clear`. No test touches the network.
 
 ## Files
 ```
@@ -117,8 +125,10 @@ tax_lien_pipeline/
 │   ├── db.py          # SQLite schema + helpers
 │   ├── importer.py    # CSV import, normalization, priority scoring
 │   ├── compliance.py  # DNC scrub, calling hours, opt-out — the gate
+│   ├── dnc.py         # Blacklist Alliance DNC lookup (fail-safe to 'unknown')
 │   ├── outreach.py    # SMS + call-script drafting
 │   └── messaging.py   # Twilio SMS + click-to-dial (stdlib urllib)
 ├── tests/test_pipeline.py   # compliance-gate + importer regression tests
+├── tests/test_dnc.py        # DNC vendor scrub fail-safe tests
 └── sample_data/montgomery_sample.csv
 ```

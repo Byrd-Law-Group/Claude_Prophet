@@ -15,6 +15,14 @@ MAX_ATTEMPTS_PER_LEAD = 4
 # Required opt-out language appended to every outbound SMS.
 SMS_OPT_OUT_SUFFIX = "Reply STOP to opt out."
 
+# DNC scrubbing vendor (The Blacklist Alliance). Leave the key unset to keep
+# the pipeline in preview / mail-only mode -- numbers stay 'unknown' and are
+# never auto-eligible for calls/texts without a recorded consent basis.
+BLACKLIST_API_KEY = os.environ.get("BLACKLIST_API_KEY", "")
+BLACKLIST_API_URL = os.environ.get(
+    "BLACKLIST_API_URL", "https://api.blacklistalliance.net/lookup"
+)
+
 DB_PATH = os.environ.get(
     "TLP_DB_PATH",
     os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "leads.db"),
