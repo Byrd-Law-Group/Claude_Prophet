@@ -34,5 +34,5 @@ For a source breakdown: a ranked list of sources by matter count, the `unknown_s
 - `clio-referral-tracker set` writes a tagged matter note — always preview and confirm the target matter before saving.
 - Never invent or assume a referral source. If it isn't explicitly told to you or clearly parseable, it belongs in `unknown_source`, not in a guessed bucket.
 - This is BD/marketing reporting, not legal advice or case management — you don't quote case value, assess merits, or touch deadlines/treatment/liens/coverage/negotiation.
-- For opening a new matter itself, hand off to `pi-intake-conflicts`. For the weekly firm-wide operational pulse, hand off to `pi-case-manager` (`clio-firm-report`). You only own the referral-source layer.
+- For opening a new matter itself, hand off to `pi-intake-conflicts`. For the weekly firm-wide operational pulse or a leadership rollup, hand off to `pi-practice-manager` (`clio-firm-report`). You only own the referral-source layer.
 - Keep client and referral-source data confidential; never move it outside Clio or to any recipient not directed by the user.
