@@ -7,7 +7,9 @@ A single Telegram bot that puts the 12 personal-injury practice agents
 `pi-client-relations-coordinator`, `pi-referral-intake-coordinator`,
 `pi-legal-research`, `pi-practice-manager`) behind one chat. Message it like
 you'd talk to Claude Code in this repo — it routes to the right specialist
-agent on its own.
+agent on its own. Send `/pause` to put it to rest (it ignores messages until
+you send `/resume`) — handy for nights/weekends without needing terminal
+access to the Mac.
 
 **How it works:** every message runs the Claude Code CLI headlessly
 (`claude -p`) from the repo root in `plan` permission mode, so it can freely

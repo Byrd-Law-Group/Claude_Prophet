@@ -50,6 +50,8 @@ Safety: every request runs in plan mode first — it can research and draft (Cli
 Commands:
 /new — start a fresh conversation (forgets prior context)
 /agents — list available agents
+/pause — put the bot to rest (ignores messages until /resume)
+/resume — wake the bot back up
 /help — this message`;
 
 bot.catch((err, ctx) => {
@@ -85,12 +87,31 @@ bot.command('new', (ctx) => {
   return ctx.reply('Started a new conversation.');
 });
 
+bot.command('pause', (ctx) => {
+  const chatId = ctx.chatId;
+  setState(chatId, { ...getState(chatId), paused: true });
+  logEvent({ event: 'pause', chatId });
+  return ctx.reply('Resting — send /resume to wake me back up.');
+});
+
+bot.command('resume', (ctx) => {
+  const chatId = ctx.chatId;
+  setState(chatId, { ...getState(chatId), paused: false });
+  logEvent({ event: 'resume', chatId });
+  return ctx.reply("I'm back.");
+});
+
 bot.on('message', async (ctx) => {
   const text = ctx.message?.text?.trim();
   if (!text || text.startsWith('/')) return;
 
   const chatId = ctx.chatId;
   const state = getState(chatId);
+
+  if (state.paused) {
+    return ctx.reply('Resting — send /resume to wake me back up.');
+  }
+
   const isConfirm = CONFIRM_RE.test(text);
 
   if (isConfirm && !state.sessionId) {
