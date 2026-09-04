@@ -34,3 +34,6 @@ data/*.db-*
 
 # Node
 node_modules/
+
+# Telegram bot runtime state (per-chat session ids, local only)
+telegram_bot/state/*.json

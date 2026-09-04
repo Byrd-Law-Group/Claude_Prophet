@@ -9,6 +9,7 @@
   },
   "scripts": {
     "start": "node mcp-server.js",
+    "telegram-bot": "node telegram_bot/bot.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -36,6 +37,7 @@
     "better-sqlite3": "^12.4.6",
     "cors": "^2.8.5",
     "express": "^5.1.0",
+    "node-telegram-bot-api": "^2.1.0",
     "openai": "^6.9.1",
     "sqlite-vec": "^0.1.7-alpha.2"
   },

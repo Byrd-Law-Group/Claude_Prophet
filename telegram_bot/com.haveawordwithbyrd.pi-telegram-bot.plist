@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.haveawordwithbyrd.pi-telegram-bot</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <!-- REPLACE with the absolute path printed by `which node` -->
+    <string>/opt/homebrew/bin/node</string>
+    <string>/Users/deandreabyrd/Documents/GitHub/Claude_Prophet/telegram_bot/bot.js</string>
+  </array>
+
+  <key>WorkingDirectory</key>
+  <string>/Users/deandreabyrd/Documents/GitHub/Claude_Prophet</string>
+
+  <key>EnvironmentVariables</key>
+  <dict>
+    <!-- REPLACE with the absolute path printed by `which claude` -->
+    <key>PATH</key>
+    <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+  </dict>
+
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+
+  <key>StandardOutPath</key>
+  <string>/Users/deandreabyrd/Documents/GitHub/Claude_Prophet/telegram_bot/logs/launchd.out.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/deandreabyrd/Documents/GitHub/Claude_Prophet/telegram_bot/logs/launchd.err.log</string>
+</dict>
+</plist>
