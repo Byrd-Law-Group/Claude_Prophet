@@ -127,6 +127,13 @@ bot.on('message', async (ctx) => {
   await ctx.api.sendChatAction({ chat_id: chatId, action: 'typing' });
   logEvent({ event: 'request', chatId, mode: permissionMode, len: text.length });
 
+  // Telegram's "typing..." indicator expires after ~5s, and these turns can
+  // legitimately run many minutes (agent routing + Clio calls). Without a
+  // heartbeat the chat just goes silent and looks stuck.
+  const heartbeat = setInterval(() => {
+    ctx.api.sendChatAction({ chat_id: chatId, action: 'typing' }).catch(() => {});
+  }, 4000);
+
   try {
     const { result, session_id } = await runClaude({
       prompt,
@@ -139,6 +146,8 @@ bot.on('message', async (ctx) => {
   } catch (err) {
     logEvent({ event: 'response', chatId, mode: permissionMode, ok: false, error: err.message });
     await reply(ctx, `Error: ${err.message}`);
+  } finally {
+    clearInterval(heartbeat);
   }
 });
 

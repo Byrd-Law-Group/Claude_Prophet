@@ -8,6 +8,17 @@ import { fileURLToPath } from 'node:url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.join(__dirname, '..');
 
+// bot.js also calls loadEnvFile, but ES module imports are hoisted and fully
+// evaluated before the importing module's own body runs — so by the time
+// bot.js's loadEnvFile call executes, this module's top-level env reads
+// below would already have happened. Load .env here too so CLAUDE_BIN,
+// CLAUDE_PROJECT_DIR, CLAUDE_MODEL, and CLAUDE_TIMEOUT_MS actually see it.
+try {
+  process.loadEnvFile(new URL('.env', import.meta.url));
+} catch {
+  // no telegram_bot/.env — env vars must already be set some other way
+}
+
 const CLAUDE_BIN = process.env.CLAUDE_BIN || 'claude';
 // Resolve relative to telegram_bot/, not the process's cwd, so this works
 // the same whether the bot is launched from the repo root or elsewhere.
@@ -38,7 +49,7 @@ Only use these subagents in this context: ${ALLOWED_AGENTS.join(', ')}. Do not i
 
 Keep replies concise and readable on a phone: short paragraphs, minimal formatting, no long tables. State plainly which agent(s) handled the request. Never fabricate matter data — if Clio data is unavailable, say so.
 
-This session runs in plan mode: for a purely informational or read-only request, just answer directly in your final message — do not attempt to exit plan mode or treat it as something requiring approval. Only propose a plan (for the user to confirm) when the request actually involves writing to Clio or sending something.`;
+This session runs in plan mode: for a purely informational or read-only request, just answer directly in your final message — do not attempt to exit plan mode or treat it as something requiring approval. When a request involves writing to Clio or sending something, do NOT call the ExitPlanMode tool — it does not work in this headless setup and will only report itself as blocked. Instead, write out the concrete plan (what would be written/sent, to whom, with what content) as plain text in your final message and end the turn there. The user unblocks it by replying "confirm" in Telegram, which reruns this exact session with full permissions — that is the only mechanism that lifts plan mode here. This applies to every subagent you invoke too: tell them explicitly not to call ExitPlanMode, and to return their proposed writes/sends as plain text for you to fold into your final summary.`;
 
 /**
  * Runs one turn of the Claude CLI.
@@ -51,6 +62,11 @@ This session runs in plan mode: for a purely informational or read-only request,
 export function runClaude({ prompt, sessionId, permissionMode }) {
   return new Promise((resolve, reject) => {
     const args = ['-p', prompt, '--output-format', 'json', '--permission-mode', permissionMode];
+    // ExitPlanMode needs an interactive approval that headless -p mode can
+    // never provide — it would just report itself as blocked. Disallow it
+    // outright so Claude (and any subagent it routes to) writes the plan out
+    // as text instead of getting stuck trying to call it.
+    if (permissionMode === 'plan') args.push('--disallowedTools', 'ExitPlanMode');
     if (sessionId) args.push('--resume', sessionId);
     if (MODEL) args.push('--model', MODEL);
     args.push('--append-system-prompt', SYSTEM_PROMPT_ADDITION);

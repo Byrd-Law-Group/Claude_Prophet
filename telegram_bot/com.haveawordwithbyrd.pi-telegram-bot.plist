@@ -7,6 +7,13 @@
 
   <key>ProgramArguments</key>
   <array>
+    <!-- caffeinate holds a sleep assertion for as long as node is running, so
+         the Mac's aggressive AC sleep setting (pmset shows `sleep 1`, i.e.
+         1 minute idle) can't pause a long-running `claude` subprocess
+         mid-turn. -s = prevent sleep on AC, -i = prevent idle sleep. -->
+    <string>/usr/bin/caffeinate</string>
+    <string>-s</string>
+    <string>-i</string>
     <!-- REPLACE with the absolute path printed by `which node` -->
     <string>/opt/homebrew/bin/node</string>
     <string>/Users/deandreabyrd/Documents/GitHub/Claude_Prophet/telegram_bot/bot.js</string>
