@@ -2,6 +2,7 @@ import { Bot } from 'node-telegram-bot-api';
 import { runClaude, ALLOWED_AGENTS } from './claude.js';
 import { getState, setState, clearState } from './state.js';
 import { logEvent } from './log.js';
+import { queryRecentFaxes, checkForNewFaxes, markFaxesSeen, formatFax } from './faxes.js';
 
 try {
   process.loadEnvFile(new URL('.env', import.meta.url));
@@ -13,6 +14,11 @@ const TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const ALLOWED_USER_ID = process.env.TELEGRAM_ALLOWED_USER_ID
   ? String(process.env.TELEGRAM_ALLOWED_USER_ID)
   : null;
+// How far back each fax check looks, and how often the background poll runs.
+// The lookback is intentionally wider than the poll interval so a missed or
+// slow poll cycle can't cause a fax to fall through the gap.
+const FAX_LOOKBACK_HOURS = Number(process.env.FAX_LOOKBACK_HOURS || 48);
+const FAX_POLL_INTERVAL_MS = Number(process.env.FAX_POLL_INTERVAL_MS || 30 * 60 * 1000);
 
 if (!TOKEN) {
   console.error('Missing TELEGRAM_BOT_TOKEN in telegram_bot/.env. Get one from @BotFather on Telegram.');
@@ -46,6 +52,21 @@ async function reply(ctx, text) {
   }
 }
 
+// Parses an optional /faxes argument like "30d", "30 days", "720h", or a bare
+// number (treated as hours) into an hours count. Returns null for empty
+// input (caller should fall back to FAX_LOOKBACK_HOURS) or invalid input.
+function parseLookbackArg(arg) {
+  const trimmed = (arg || '').trim();
+  if (!trimmed) return null;
+  const dayMatch = trimmed.match(/^(\d+(?:\.\d+)?)\s*d(?:ays?)?$/i);
+  if (dayMatch) return Number(dayMatch[1]) * 24;
+  const hourMatch = trimmed.match(/^(\d+(?:\.\d+)?)\s*h(?:ours?|rs?)?$/i);
+  if (hourMatch) return Number(hourMatch[1]);
+  const bareNumber = trimmed.match(/^(\d+(?:\.\d+)?)$/);
+  if (bareNumber) return Number(bareNumber[1]);
+  return undefined; // signals "couldn't parse this"
+}
+
 const HELP_TEXT = `Firm assistant bot — talk to it like you would in Claude Code; it routes to the right specialist:
 ${ALLOWED_AGENTS.map((a) => `• ${a}`).join('\n')}
 
@@ -54,9 +75,12 @@ Safety: every request runs in plan mode first — it can research and draft (Cli
 Commands:
 /new — start a fresh conversation (forgets prior context)
 /agents — list available agents
+/faxes — check for recently received faxes right now (default lookback ${FAX_LOOKBACK_HOURS}h). Add a lookback to search further back, e.g. "/faxes 30d" or "/faxes 720h"
 /pause — put the bot to rest (ignores messages until /resume)
 /resume — wake the bot back up
-/help — this message`;
+/help — this message
+
+The bot also checks for new incoming faxes on its own every ${Math.round(FAX_POLL_INTERVAL_MS / 60000)} min and will message you here as soon as one arrives.`;
 
 bot.catch((err, ctx) => {
   console.error('handler error', ctx.update.update_id, err);
@@ -89,6 +113,32 @@ bot.command('agents', (ctx) => reply(ctx, ALLOWED_AGENTS.join('\n')));
 bot.command('new', (ctx) => {
   clearState(ctx.chatId);
   return ctx.reply('Started a new conversation.');
+});
+
+bot.command('faxes', async (ctx) => {
+  const parsed = parseLookbackArg(typeof ctx.match === 'string' ? ctx.match : '');
+  if (parsed === undefined) {
+    await ctx.reply('Didn\'t understand that lookback. Try "/faxes", "/faxes 30d", or "/faxes 720h".');
+    return;
+  }
+  const hours = parsed ?? FAX_LOOKBACK_HOURS;
+
+  await ctx.api.sendChatAction({ chat_id: ctx.chatId, action: 'typing' });
+  try {
+    const faxes = await queryRecentFaxes(hours);
+    // Whatever this shows the user is now "seen" so the background poll
+    // doesn't message them again about the same fax a few minutes later.
+    markFaxesSeen(faxes.map((f) => f.id));
+    logEvent({ event: 'fax_check_manual', chatId: ctx.chatId, hours, found: faxes.length });
+    if (!faxes.length) {
+      await ctx.reply(`No faxes received in the last ${hours}h.`);
+    } else {
+      await reply(ctx, faxes.map(formatFax).join('\n'));
+    }
+  } catch (err) {
+    logEvent({ event: 'fax_check_manual', chatId: ctx.chatId, hours, ok: false, error: err.message });
+    await ctx.reply(`Error checking faxes: ${err.message}`);
+  }
 });
 
 bot.command('pause', (ctx) => {
@@ -167,6 +217,23 @@ bot.on('message', async (ctx) => {
     clearInterval(heartbeat);
   }
 });
+
+// Background fax check: fires regardless of /pause, since an incoming fax
+// (records, a filing) is a time-sensitive external event, not a chat turn.
+if (ALLOWED_USER_ID) {
+  setInterval(async () => {
+    try {
+      const fresh = await checkForNewFaxes(FAX_LOOKBACK_HOURS);
+      for (const fax of fresh) {
+        await bot.api.sendMessage({ chat_id: Number(ALLOWED_USER_ID), text: formatFax(fax) });
+      }
+    } catch (err) {
+      logEvent({ event: 'fax_check_auto', ok: false, error: err.message });
+    }
+  }, FAX_POLL_INTERVAL_MS);
+} else {
+  console.log('Skipping automatic fax checks: TELEGRAM_ALLOWED_USER_ID is not set yet.');
+}
 
 console.log('PI practice Telegram bot running (polling)...');
 try {
