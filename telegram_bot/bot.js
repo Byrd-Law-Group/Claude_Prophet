@@ -20,7 +20,11 @@ if (!TOKEN) {
 }
 
 const bot = new Bot(TOKEN);
-const CONFIRM_RE = /^\s*(confirm|yes|approve|go ahead|do it)\s*[.!]?\s*$/i;
+// Bare "confirm" is deliberately NOT accepted as a blanket approval — a plan
+// with several write/send actions must be confirmed one at a time, by number,
+// so one word in Telegram can never authorize a batch of unrelated writes.
+const BARE_CONFIRM_RE = /^\s*(confirm|yes|approve|go ahead|do it)\s*[.!]?\s*$/i;
+const ITEM_CONFIRM_RE = /^\s*confirm\s+(\d+)\s*[.!]?\s*$/i;
 const TELEGRAM_MAX = 4000;
 
 function chunk(text) {
@@ -45,7 +49,7 @@ async function reply(ctx, text) {
 const HELP_TEXT = `Firm assistant bot — talk to it like you would in Claude Code; it routes to the right specialist:
 ${ALLOWED_AGENTS.map((a) => `• ${a}`).join('\n')}
 
-Safety: every request runs in plan mode first — it can research and draft (Clio notes, letters, status updates) but cannot save or send anything. Reply "confirm" to actually execute the last thing it proposed.
+Safety: every request runs in plan mode first — it can research and draft (Clio notes, letters, status updates) but cannot save or send anything. Every write or send it proposes is numbered. Reply "confirm <number>" (e.g. "confirm 2") to execute just that one item — each item needs its own confirmation, so a batch of drafts is never approved all at once.
 
 Commands:
 /new — start a fresh conversation (forgets prior context)
@@ -112,7 +116,20 @@ bot.on('message', async (ctx) => {
     return ctx.reply('Resting — send /resume to wake me back up.');
   }
 
-  const isConfirm = CONFIRM_RE.test(text);
+  const itemMatch = text.match(ITEM_CONFIRM_RE);
+
+  if (BARE_CONFIRM_RE.test(text) && !itemMatch) {
+    if (!state.sessionId) {
+      await ctx.reply('Nothing pending to confirm.');
+      return;
+    }
+    await ctx.reply(
+      'Which item? Each proposed write or send is numbered — reply "confirm <number>" (e.g. "confirm 2") for that one specifically.'
+    );
+    return;
+  }
+
+  const isConfirm = Boolean(itemMatch);
 
   if (isConfirm && !state.sessionId) {
     await ctx.reply('Nothing pending to confirm.');
@@ -121,7 +138,7 @@ bot.on('message', async (ctx) => {
 
   const permissionMode = isConfirm ? 'bypassPermissions' : 'plan';
   const prompt = isConfirm
-    ? 'Proceed. You are approved to execute exactly what you just proposed, including any Clio writes or sends it called for.'
+    ? `Proceed with ONLY item ${itemMatch[1]} from the plan you most recently proposed — execute exactly that one Clio write or send, nothing else. Every other item you proposed stays staged exactly as before; do not touch them even though you technically have the permissions to. Once item ${itemMatch[1]} is done, report what was done and remind me which items are still pending confirmation.`
     : text;
 
   await ctx.api.sendChatAction({ chat_id: chatId, action: 'typing' });
