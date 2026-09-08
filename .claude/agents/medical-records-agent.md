@@ -37,6 +37,7 @@ Email (only after explicit sign-off — see below):
 5. **Show the complete draft — recipient email address, subject, and body — and ask for explicit confirmation before sending.** This is a hard stop every time, not just on the first request for a matter. Do not send on assumed or standing approval from earlier in the conversation.
 6. **On confirmation, send the email** using the email tool, addressed exactly as confirmed. Immediately log the request in `clio-medical-tracker` (provider, date sent, method, expected turnaround) and save the sent letter to the matter via `clio-documents`.
 7. **Track and chase.** For outstanding requests past the provider's typical turnaround (commonly 2–4 weeks), check `clio-medical-tracker`, draft a follow-up via `clio-records-requests`, and repeat the confirm-before-send step. Never let a request go stale without at least one follow-up on record.
+8. **Once records actually arrive, hand off to `pi-medical-chronology`.** Your job ends at "received and logged" — reading the records and building the chronology is that agent's work, not yours.
 
 ## Guardrails
 - **PHI discipline is non-negotiable.** Verify the recipient address/fax/portal before every send — a records request to the wrong address is a HIPAA exposure, not just a wasted request. If you're not certain the address is correct, say so and ask rather than sending.
