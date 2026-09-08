@@ -1,0 +1,206 @@
+---
+import { site } from '../siteData';
+
+interface Props {
+  /** 'owners' = name/phone/address/best time/message; 'contact' = name/email/message. */
+  variant?: 'owners' | 'contact';
+  /** Label for the form's accessible name / email subject line. */
+  formName?: string;
+}
+
+const { variant = 'contact', formName = 'Website contact' } = Astro.props;
+const id = `form-${variant}`;
+---
+
+<div class="contact-form-wrap">
+  <!-- Success / error panels are rendered server-side and toggled by JS so the
+       phone + email are real HTML (accessible, works without string building). -->
+  <div
+    class="form-status form-status--success"
+    id={`${id}-success`}
+    role="status"
+    hidden
+  >
+    <p><strong>Thank you — your message has been sent.</strong></p>
+    <p>
+      We'll be in touch soon. If you'd like to reach us right away, call
+      <a href={`tel:${site.phone}`}>{site.phone}</a> or email
+      <a href={`mailto:${site.emails.acquisitions}`}
+        >{site.emails.acquisitions}</a
+      >.
+    </p>
+  </div>
+
+  <div class="form-status form-status--error" id={`${id}-error`} role="alert" hidden>
+    <p><strong>Sorry — we couldn't send your message.</strong></p>
+    <p>
+      Please call <a href={`tel:${site.phone}`}>{site.phone}</a> or email
+      <a href={`mailto:${site.emails.acquisitions}`}
+        >{site.emails.acquisitions}</a
+      > and we'll help you directly.
+    </p>
+  </div>
+
+  <form
+    id={id}
+    class="contact-form"
+    method="post"
+    action="/api/contact"
+    aria-label={formName}
+  >
+    <input type="hidden" name="form_name" value={formName} />
+
+    <!-- Honeypot: hidden from people, tempting to bots. Leave blank. -->
+    <div class="hp-field" aria-hidden="true">
+      <label for={`${id}-company`}>Company (leave blank)</label>
+      <input
+        id={`${id}-company`}
+        type="text"
+        name="company"
+        tabindex="-1"
+        autocomplete="off"
+      />
+    </div>
+
+    <div class="form-field">
+      <label for={`${id}-name`}
+        >Name <span class="required-mark" aria-hidden="true">*</span></label
+      >
+      <input id={`${id}-name`} type="text" name="name" required autocomplete="name" />
+    </div>
+
+    {
+      variant === 'owners' && (
+        <>
+          <div class="form-field">
+            <label for={`${id}-phone`}>
+              Phone <span class="required-mark" aria-hidden="true">*</span>
+            </label>
+            <input
+              id={`${id}-phone`}
+              type="tel"
+              name="phone"
+              required
+              autocomplete="tel"
+            />
+          </div>
+          <div class="form-field">
+            <label for={`${id}-address`}>Property address</label>
+            <input
+              id={`${id}-address`}
+              type="text"
+              name="property_address"
+              autocomplete="street-address"
+            />
+          </div>
+          <div class="form-field">
+            <label for={`${id}-besttime`}>Best time to call</label>
+            <input id={`${id}-besttime`} type="text" name="best_time" />
+          </div>
+          <div class="form-field">
+            <label for={`${id}-message`}>Anything else? (optional)</label>
+            <textarea id={`${id}-message`} name="message" />
+          </div>
+        </>
+      )
+    }
+
+    {
+      variant === 'contact' && (
+        <>
+          <div class="form-field">
+            <label for={`${id}-email`}>
+              Email <span class="required-mark" aria-hidden="true">*</span>
+            </label>
+            <input
+              id={`${id}-email`}
+              type="email"
+              name="email"
+              required
+              autocomplete="email"
+            />
+          </div>
+          <div class="form-field">
+            <label for={`${id}-message`}>
+              Message <span class="required-mark" aria-hidden="true">*</span>
+            </label>
+            <textarea id={`${id}-message`} name="message" required />
+          </div>
+        </>
+      )
+    }
+
+    <!-- Cloudflare Turnstile. The widget injects its token as
+         `cf-turnstile-response`. Replace the site key in src/siteData.ts. -->
+    <div
+      class="cf-turnstile"
+      data-sitekey={site.turnstileSiteKey}
+      data-theme="auto"
+      style="margin-bottom:1.1rem;"
+    >
+    </div>
+
+    <button type="submit" class="btn btn-primary">Send message</button>
+  </form>
+</div>
+
+<!-- Turnstile is the only external script on the site. -->
+<script
+  src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+  async
+  defer
+  is:inline></script>
+
+<script is:inline define:vars={{ id }}>
+  (function () {
+    var form = document.getElementById(id);
+    if (!form) return;
+    var success = document.getElementById(id + '-success');
+    var error = document.getElementById(id + '-error');
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var btn = form.querySelector('button[type="submit"]');
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Sending…';
+      }
+      if (error) error.hidden = true;
+
+      fetch(form.action, {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        body: new FormData(form),
+      })
+        .then(function (res) {
+          return res.json().catch(function () {
+            return { ok: res.ok };
+          });
+        })
+        .then(function (data) {
+          if (data && data.ok) {
+            form.hidden = true;
+            if (success) {
+              success.hidden = false;
+              success.focus && success.focus();
+              success.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+          } else {
+            throw new Error('not ok');
+          }
+        })
+        .catch(function () {
+          if (error) error.hidden = false;
+          if (btn) {
+            btn.disabled = false;
+            btn.textContent = 'Send message';
+          }
+          if (window.turnstile) {
+            try {
+              window.turnstile.reset();
+            } catch (_) {}
+          }
+        });
+    });
+  })();
+</script>

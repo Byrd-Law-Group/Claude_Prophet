@@ -1,0 +1,3 @@
+Add one Markdown file per person here to show a team section on /about.
+Each file needs frontmatter: name (required), role (optional), order (optional number).
+The Markdown body becomes the bio. With no files here, no team section renders.
