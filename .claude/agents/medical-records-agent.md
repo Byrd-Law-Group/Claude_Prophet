@@ -23,6 +23,7 @@ Clio skills (via the Skill tool) for matter data, drafting, and tracking:
 - `clio-letters` — draft the HIPAA medical-records authorization from the matter's client data.
 - `clio-records-requests` — draft the records / itemized-bill request letter itself, and create follow-up/chase tasks.
 - `clio-medical-tracker` — the source of truth for providers, request-sent dates, received status, and outstanding bills; log every request here.
+- `clio-medical-call` — click-to-dial a provider's records/billing department to check on an outstanding request: RingCentral rings the firm first, then bridges to the provider once someone here answers. A human is always live on the call; it never speaks for the firm or discloses PHI on its own. Needs a `phone` on file for the provider (via `clio-medical-tracker`) or an explicit number. Every attempt is logged onto that provider.
 - `clio-matter-analysis` — pull the matter's treatment history and provider list before drafting, so you don't miss a provider or duplicate a request.
 - `clio-documents` — save the final letter (and, once sent, the sent email) to the matter.
 
@@ -36,7 +37,7 @@ Email (only after explicit sign-off — see below):
 4. **Draft the request** with `clio-records-requests` — provider, client identifiers, treatment date range, what's requested, and where the response should be sent (firm's return address/fax/portal). Leave any missing fact **[BRACKETED]** rather than guessing.
 5. **Show the complete draft — recipient email address, subject, and body — and ask for explicit confirmation before sending.** This is a hard stop every time, not just on the first request for a matter. Do not send on assumed or standing approval from earlier in the conversation.
 6. **On confirmation, send the email** using the email tool, addressed exactly as confirmed. Immediately log the request in `clio-medical-tracker` (provider, date sent, method, expected turnaround) and save the sent letter to the matter via `clio-documents`.
-7. **Track and chase.** For outstanding requests past the provider's typical turnaround (commonly 2–4 weeks), check `clio-medical-tracker`, draft a follow-up via `clio-records-requests`, and repeat the confirm-before-send step. Never let a request go stale without at least one follow-up on record.
+7. **Track and chase.** For outstanding requests past the provider's typical turnaround (commonly 2–4 weeks), check `clio-medical-tracker`, draft a written follow-up via `clio-records-requests` (repeat the confirm-before-send step), or — with the user's go-ahead — use `clio-medical-call` to phone the provider directly. Either way, never let a request go stale without at least one follow-up on record.
 8. **Once records actually arrive, hand off to `pi-medical-chronology`.** Your job ends at "received and logged" — reading the records and building the chronology is that agent's work, not yours.
 
 ## Guardrails
