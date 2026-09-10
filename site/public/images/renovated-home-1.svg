@@ -1,12 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-label="Placeholder image">
-  <rect width="1200" height="800" fill="#1B2A41"/>
-  <rect x="0" y="560" width="1200" height="240" fill="#22344f"/>
-  <g fill="#2c3e5c">
+  <rect width="1200" height="800" fill="#1e3d2c"/>
+  <rect x="0" y="560" width="1200" height="240" fill="#24462f"/>
+  <g fill="#2c5138">
     <rect x="430" y="300" width="340" height="280"/>
     <polygon points="430,300 600,190 770,300"/>
   </g>
-  <g fill="#B08D57" font-family="Georgia, serif" text-anchor="middle">
-    <text x="600" y="430" font-size="44">Placeholder</text>
-    <text x="600" y="480" font-size="24" fill="#F7F5F0">renovated-home-1.jpg</text>
+  <g font-family="Georgia, serif" text-anchor="middle">
+    <text x="600" y="430" font-size="44" fill="#f2ecdb">Placeholder</text>
+    <text x="600" y="480" font-size="24" fill="#c9d3c0">renovated-home-1.jpg</text>
   </g>
 </svg>

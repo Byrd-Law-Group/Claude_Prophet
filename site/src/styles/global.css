@@ -1,34 +1,33 @@
 /*
   6170 Properties — global styles.
-  Palette: deep navy, warm off-white, muted brass accent, charcoal text.
+  Brand palette: deep forest green + warm cream (from the 6170 Properties logo).
   Dark mode via prefers-color-scheme. System font stacks only (no external
   JS or webfont requests). To self-host Source Serif 4 later, see README.
 */
 
 :root {
-  /* Brand palette */
-  --navy: #1b2a41;
-  --off-white: #f7f5f0;
-  --brass: #b08d57; /* decorative brass: borders, underlines, accents */
-  --charcoal: #2b2b2b;
+  /* Brand palette — forest green + cream */
+  --green: #1e3d2c; /* brand deep green: header, footer, headings */
+  --green-deep: #16301f; /* darker green for hovers */
+  --cream: #f2ecdb; /* warm cream: page background, text on green */
+  --cream-surface: #fbf7ec; /* lighter cream: cards */
+  --charcoal: #26302a; /* green-tinted dark for body text */
 
-  /* Semantic tokens (light).
-     The brand brass (#b08d57) fails WCAG AA as text on the light background,
-     so interactive TEXT (links, buttons) uses a darker brass that passes AA;
-     #b08d57 itself is kept for decorative, non-text accents. */
-  --bg: var(--off-white);
-  --surface: #ffffff;
+  /* Semantic tokens (light). Brand green on cream clears WCAG AA comfortably
+     as both text and button fill, so links and buttons use the brand green. */
+  --bg: var(--cream);
+  --surface: var(--cream-surface);
   --text: var(--charcoal);
-  --heading: var(--navy);
-  --muted: #5a5a5a;
-  --accent: #7f6130;
-  --accent-hover: #5f4720;
-  --border: #e3ddd1;
-  --focus: #1b2a41;
+  --heading: var(--green);
+  --muted: #566055;
+  --accent: var(--green);
+  --accent-hover: var(--green-deep);
+  --border: #e2dcc9;
+  --focus: var(--green);
 
-  /* Button text on accent */
-  --on-accent: #ffffff;
-  --on-navy: #f7f5f0;
+  /* Text on a filled accent (green) button, and text/links on green surfaces */
+  --on-accent: var(--cream);
+  --on-green: var(--cream);
 
   --maxw: 72ch;
   --radius: 6px;
@@ -41,17 +40,17 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #141c2b;
-    --surface: #1b2a41;
-    --text: #e8e6e0;
-    --heading: #f2ede3;
-    --muted: #b9b6ad;
-    --accent: #cda36a;
-    --accent-hover: #dcb985;
-    --border: #2c3a52;
-    --focus: #cda36a;
-    --on-accent: #1b2a41;
-    --on-navy: #f7f5f0;
+    --bg: #14271a;
+    --surface: #1e3d2c;
+    --text: #eae4d2;
+    --heading: #f4efe0;
+    --muted: #b3bcae;
+    --accent: #efe8d6; /* cream links/buttons on the dark green ground */
+    --accent-hover: #ffffff;
+    --border: #2f4a37;
+    --focus: #efe8d6;
+    --on-accent: #1e3d2c; /* green text on a cream button */
+    --on-green: #f2ecdb;
   }
 }
 
@@ -158,8 +157,8 @@ main {
   position: absolute;
   left: 0.5rem;
   top: -3rem;
-  background: var(--navy);
-  color: var(--on-navy);
+  background: var(--green);
+  color: var(--on-green);
   padding: 0.6rem 1rem;
   border-radius: var(--radius);
   z-index: 100;
@@ -301,7 +300,7 @@ textarea {
   margin-bottom: 1.25rem;
 }
 .form-status--success {
-  background: color-mix(in srgb, var(--brass) 14%, var(--surface));
+  background: color-mix(in srgb, var(--green) 12%, var(--surface));
   border: 1px solid var(--accent);
 }
 .form-status--error {
@@ -311,8 +310,8 @@ textarea {
 
 /* Header / nav */
 .site-header {
-  background: var(--navy);
-  color: var(--on-navy);
+  background: var(--green);
+  color: var(--on-green);
 }
 .site-header .container {
   display: flex;
@@ -323,15 +322,23 @@ textarea {
   padding-block: 0.9rem;
 }
 .brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
   font-family: var(--font-serif);
   font-size: 1.2rem;
   font-weight: 600;
-  color: var(--on-navy);
+  color: var(--on-green);
   text-decoration: none;
   white-space: nowrap;
 }
 .brand:hover {
-  color: var(--on-navy);
+  color: var(--on-green);
+}
+.brand-mark {
+  height: 2rem;
+  width: auto;
+  flex: none;
 }
 .site-nav ul {
   list-style: none;
@@ -342,7 +349,7 @@ textarea {
   padding: 0;
 }
 .site-nav a {
-  color: var(--on-navy);
+  color: var(--on-green);
   text-decoration: none;
   font-weight: 500;
   padding: 0.25rem 0;
@@ -351,18 +358,18 @@ textarea {
 .site-nav a:hover,
 .site-nav a[aria-current='page'] {
   color: #fff;
-  border-bottom-color: var(--brass);
+  border-bottom-color: var(--on-green);
 }
 
 /* Footer */
 .site-footer {
-  background: var(--navy);
-  color: var(--on-navy);
+  background: var(--green);
+  color: var(--on-green);
   margin-top: 3rem;
   padding-block: 2rem;
 }
 .site-footer a {
-  color: var(--on-navy);
+  color: var(--on-green);
   text-decoration: underline;
   text-underline-offset: 2px;
 }
