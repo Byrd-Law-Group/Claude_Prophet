@@ -7,7 +7,7 @@
 
 :root {
   /* Brand palette — forest green + cream */
-  --green: #1e3d2c; /* brand deep green: header, footer, headings */
+  --green: #1f3d2b; /* brand deep green: header, footer, headings */
   --green-deep: #16301f; /* darker green for hovers */
   --cream: #f2ecdb; /* warm cream: page background, text on green */
   --cream-surface: #fbf7ec; /* lighter cream: cards */
@@ -237,6 +237,14 @@ main {
 /* Hero */
 .hero {
   padding-block: 3rem 2rem;
+}
+.hero-logo {
+  margin: 0 0 1.25rem;
+  line-height: 0;
+}
+.hero-logo img {
+  width: min(330px, 80%);
+  height: auto;
 }
 .hero .statement {
   font-size: clamp(1.15rem, 2.5vw, 1.4rem);
