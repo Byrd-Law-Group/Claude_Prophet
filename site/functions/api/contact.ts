@@ -31,27 +31,6 @@ type PagesFn = (ctx: {
 
 const FALLBACK_EMAIL = 'team@6170properties.com';
 
-// TEMPORARY diagnostic. GET /api/contact reports which env vars the running
-// deployment can see (booleans only — never the secret values) plus a build
-// marker so we can confirm the latest code is actually live. Remove after
-// the contact form is confirmed working.
-export const onRequestGet: PagesFn = async ({ env }) => {
-  const body = {
-    diagnostic: true,
-    build: 'diag-1',
-    env: {
-      TURNSTILE_SECRET: !!env.TURNSTILE_SECRET,
-      RESEND_API_KEY: !!env.RESEND_API_KEY,
-      CONTACT_TO: !!env.CONTACT_TO,
-      CONTACT_FROM: !!env.CONTACT_FROM,
-    },
-  };
-  return new Response(JSON.stringify(body, null, 2), {
-    status: 200,
-    headers: { 'content-type': 'application/json; charset=utf-8' },
-  });
-};
-
 function wantsJson(request: Request): boolean {
   const accept = request.headers.get('accept') || '';
   return accept.includes('application/json');
