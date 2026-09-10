@@ -11,9 +11,7 @@ const year = new Date().getFullYear();
         <p>{site.entityLine}</p>
         <p>{site.mailingAddress}</p>
         <p>
-          <a href={`mailto:${site.emails.acquisitions}`}
-            >{site.emails.acquisitions}</a
-          >
+          <a href={`mailto:${site.email}`}>{site.email}</a>
         </p>
         <p>{site.phone}</p>
       </div>

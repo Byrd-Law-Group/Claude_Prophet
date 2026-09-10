@@ -104,7 +104,7 @@ Function). It:
 1. Rejects bots via a hidden **honeypot** field and **Cloudflare Turnstile**.
 2. Validates the input.
 3. Emails the submission to `CONTACT_TO` via **Resend**.
-4. On failure, the page shows the `acquisitions@` email and phone as a fallback.
+4. On failure, the page shows the `team@` email and phone as a fallback.
 
 ### Required environment variables
 
@@ -114,7 +114,7 @@ Secrets** (mark the keys as secrets). See [`.env.example`](.env.example).
 | Variable | Purpose |
 | --- | --- |
 | `RESEND_API_KEY` | Resend API key used to send the email. |
-| `CONTACT_TO` | Recipient, e.g. `acquisitions@6170properties.com`. |
+| `CONTACT_TO` | Recipient, e.g. `team@6170properties.com`. |
 | `TURNSTILE_SECRET` | Cloudflare Turnstile **secret** key (server side). |
 | `CONTACT_FROM` *(optional)* | Verified Resend sender. Defaults to `6170 Properties <website@6170properties.com>`. |
 

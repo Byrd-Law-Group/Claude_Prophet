@@ -37,10 +37,10 @@ provider and Cloudflare) or as required by law.
 ## How to request deletion
 
 You can ask us to delete the information you submitted at any time. Email
-[notices@6170properties.com](mailto:notices@6170properties.com) with the details
+[team@6170properties.com](mailto:team@6170properties.com) with the details
 you provided and we will remove it from our records.
 
 ## Contact
 
 Questions about this policy can be sent to
-[notices@6170properties.com](mailto:notices@6170properties.com).
+[team@6170properties.com](mailto:team@6170properties.com).

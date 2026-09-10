@@ -43,4 +43,4 @@ any damages arising from your use of this website.
 ## Contact
 
 Questions about these terms can be sent to
-[notices@6170properties.com](mailto:notices@6170properties.com).
+[team@6170properties.com](mailto:team@6170properties.com).

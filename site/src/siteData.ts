@@ -6,10 +6,8 @@ export const site = {
   // Placeholders — replace with the real values before launch.
   mailingAddress: '{{MAILING_ADDRESS}}',
   phone: '{{PHONE}}',
-  emails: {
-    acquisitions: 'acquisitions@6170properties.com',
-    notices: 'notices@6170properties.com',
-  },
+  // Single public contact address for the company.
+  email: 'team@6170properties.com',
   areaServed: 'Montgomery County, Ohio',
   url: 'https://6170properties.com',
   // Cloudflare Turnstile site key (public). Replace before launch.
