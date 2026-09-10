@@ -9,13 +9,19 @@ const pages = defineCollection({
   schema: z.object({
     title: z.string(),
     description: z.string(),
-    // Optional home-page hero.
+    // Optional home-page hero. `ctas` renders as buttons in order; each is
+    // styled primary (filled) or secondary (outline).
     hero: z
       .object({
         heading: z.string(),
         statement: z.string(),
-        primaryCta: z.object({ label: z.string(), href: z.string() }),
-        secondaryCta: z.object({ label: z.string(), href: z.string() }),
+        ctas: z.array(
+          z.object({
+            label: z.string(),
+            href: z.string(),
+            variant: z.enum(['primary', 'secondary']).default('secondary'),
+          })
+        ),
       })
       .optional(),
     // Optional set of short content blocks (home page "how we acquire" etc.).
