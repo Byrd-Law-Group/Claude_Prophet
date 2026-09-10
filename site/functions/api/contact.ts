@@ -139,6 +139,8 @@ export const onRequestPost: PagesFn = async ({ request, env }) => {
   // 3) Turnstile.
   const token = get('cf-turnstile-response');
   if (!env.TURNSTILE_SECRET) {
+    // Presence-only diagnostic (no secret values are logged).
+    console.error('contact: not configured — TURNSTILE_SECRET is missing');
     return respond(request, 500, false, 'The form is not fully configured yet.');
   }
   if (!token) {
@@ -162,6 +164,11 @@ export const onRequestPost: PagesFn = async ({ request, env }) => {
 
   // 4) Build and send the email via Resend.
   if (!env.RESEND_API_KEY || !env.CONTACT_TO) {
+    // Presence-only diagnostic (no secret values are logged).
+    console.error('contact: not configured —', {
+      hasResendKey: !!env.RESEND_API_KEY,
+      hasContactTo: !!env.CONTACT_TO,
+    });
     return respond(request, 500, false, 'The form is not fully configured yet.');
   }
 
