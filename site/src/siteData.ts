@@ -21,5 +21,6 @@ export const nav: NavItem[] = [
   { label: 'Home', href: '/' },
   { label: 'About', href: '/about' },
   { label: 'For Property Owners', href: '/property-owners' },
+  { label: 'Facing Foreclosure', href: '/foreclosures' },
   { label: 'Contact', href: '/contact' },
 ];
