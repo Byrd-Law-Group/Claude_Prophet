@@ -42,12 +42,16 @@ const jsonLd = {
       <h1>{hero?.heading}</h1>
       <p class="statement">{hero?.statement}</p>
       <div class="hero-actions">
-        <a class="btn btn-primary" href={hero?.primaryCta.href}
-          >{hero?.primaryCta.label}</a
-        >
-        <a class="btn btn-secondary" href={hero?.secondaryCta.href}
-          >{hero?.secondaryCta.label}</a
-        >
+        {
+          hero?.ctas.map((cta) => (
+            <a
+              class={`btn ${cta.variant === 'primary' ? 'btn-primary' : 'btn-secondary'}`}
+              href={cta.href}
+            >
+              {cta.label}
+            </a>
+          ))
+        }
       </div>
     </div>
   </section>

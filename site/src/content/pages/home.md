@@ -4,12 +4,16 @@ description: '6170 Properties acquires and revitalizes tax-delinquent and forecl
 hero:
   heading: '6170 Properties'
   statement: '6170 Properties acquires and revitalizes tax-delinquent and foreclosed real estate in Montgomery County, Ohio.'
-  primaryCta:
-    label: 'Own a property with tax problems?'
-    href: '/property-owners'
-  secondaryCta:
-    label: 'Contact us'
-    href: '/contact'
+  ctas:
+    - label: 'Behind on property taxes?'
+      href: '/property-owners'
+      variant: primary
+    - label: 'Facing foreclosure?'
+      href: '/foreclosures'
+      variant: primary
+    - label: 'Contact us'
+      href: '/contact'
+      variant: secondary
 blocks:
   - heading: 'How we acquire'
     body: 'We buy through Montgomery County sheriff''s tax foreclosure sales, Auditor forfeited land sales, the Montgomery County Land Bank, and mortgage foreclosures — and directly from owners who are behind on their property taxes or facing foreclosure.'
