@@ -343,9 +343,10 @@ textarea {
 .brand:hover {
   color: var(--on-green);
 }
-.brand-mark {
-  height: 2rem;
+.brand-logo {
+  height: 3.6rem;
   width: auto;
+  display: block;
   flex: none;
 }
 .site-nav ul {
