@@ -54,8 +54,8 @@ def cmd_scrub(args, conn):
         print("  %-15s %d" % (k, v))
     if counts.get("mail_only"):
         print("\nNote: 'mail_only' includes numbers with UNKNOWN DNC status. "
-              "Wire a DNC vendor into compliance.scrub_number (or add consent) "
-              "to make them call/text eligible.")
+              "Set BLACKLIST_API_KEY so the DNC vendor can clear them (or add "
+              "consent) to make them call/text eligible.")
 
 
 def cmd_list(args, conn):

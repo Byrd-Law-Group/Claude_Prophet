@@ -10,16 +10,15 @@ What it enforces:
   * Per-lead attempt caps (anti-harassment).
   * Permanent opt-out honoring.
 
-What it CANNOT do for you (you must wire these in before live outreach):
-  * Query the National DNC Registry. That requires a paid SAN subscription
-    (telemarketing.donotcall.gov) or a scrubbing vendor. Until one is wired
-    into `scrub_number`, numbers are marked 'unknown' and are NOT auto-eligible
-    for calling/texting — you must supply consent or a documented prior
-    business relationship, or contact by mail.
+DNC scrubbing is delegated to a vendor (The Blacklist Alliance) via `tlp.dnc`.
+Set BLACKLIST_API_KEY to enable it; without a key, or on any vendor error,
+numbers resolve to 'unknown' and are NOT auto-eligible for calling/texting —
+you must supply consent or a documented prior business relationship, or
+contact by mail. This fail-safe means an outage can never open a contact path.
 """
 import datetime
 
-from . import config, db
+from . import config, db, dnc
 
 try:
     from zoneinfo import ZoneInfo
@@ -45,15 +44,14 @@ def scrub_number(conn, phone):
     """Return a DNC status for a phone number: 'listed', 'clear', or 'unknown'.
 
     Checks the local suppression list first (covers prior opt-outs and any
-    DNC numbers you've imported). If not found, returns 'unknown' -- because
-    without a live National DNC Registry check we cannot assert a number is
-    clear. Plug your DNC vendor in where marked.
+    DNC numbers you've imported) so a suppressed number never triggers a
+    billable vendor lookup. If not locally suppressed, defers to the DNC
+    vendor (`tlp.dnc.check`), which returns 'clear' / 'listed' / 'unknown'.
+    'unknown' (no API key or a vendor error) fails safe -> mail_only.
     """
     if db.is_suppressed(conn, phone):
         return "listed"
-    # --- Plug in your National DNC / vendor check here. ---
-    # e.g. status = my_dnc_vendor.check(phone); return 'listed'/'clear'
-    return "unknown"
+    return dnc.check(phone)
 
 
 def scrub_lead(conn, lead):
