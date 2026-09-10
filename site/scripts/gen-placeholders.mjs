@@ -62,7 +62,7 @@ function solidPng(width, height, [r, g, b]) {
   ]);
 }
 
-// Deep navy (#1B2A41)
-const navy = [0x1b, 0x2a, 0x41];
-writeFileSync(join(outDir, 'og-image.png'), solidPng(1200, 630, navy));
+// Brand forest green (#1E3D2C)
+const green = [0x1e, 0x3d, 0x2c];
+writeFileSync(join(outDir, 'og-image.png'), solidPng(1200, 630, green));
 console.log('Wrote public/og-image.png (1200x630 placeholder)');
