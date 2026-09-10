@@ -1,15 +1,15 @@
 ---
 title: 'About'
-description: 'A locally focused acquisition group in the Dayton area that brings tax-delinquent property back into productive use, working with Montgomery County rather than around it.'
+description: 'A locally focused acquisition group in the Dayton area that brings tax-delinquent and foreclosed property back into productive use, working with Montgomery County rather than around it.'
 ---
 
 # About 6170 Properties
 
 6170 Properties LLC is a locally focused real estate acquisition group working
 in Dayton and the surrounding Montgomery County, Ohio communities. We acquire
-tax-delinquent and distressed properties, bring their taxes current, and put
-them back to productive use — as well-maintained rentals or as homes ready for
-a new owner.
+tax-delinquent, foreclosure, and other distressed properties, bring them current
+and stable, and put them back to productive use — as well-maintained rentals or
+as homes ready for a new owner.
 
 We take a conservative approach. We underwrite carefully, buy only what we can
 responsibly improve and hold, and we pay the delinquent taxes on the properties
@@ -33,9 +33,13 @@ Montgomery County:
 - **The Montgomery County Land Bank** (the Montgomery County Land Reutilization
   Corporation) — vacant and tax-delinquent properties assembled and transferred
   for productive reuse.
+- **Mortgage foreclosures** — homes headed to a sheriff's sale, which we can
+  often buy before the auction by working directly with owners who are facing
+  foreclosure.
 - **Direct purchases from owners** — fair, no-obligation cash offers to owners
-  who are behind on their taxes and would rather sell than go through a county
-  sale.
+  who are behind on their taxes or facing foreclosure and would rather sell than
+  go through a county sale.
 
-If you own a property with tax problems and want to understand your options,
-please see our page [for property owners](/property-owners).
+If you own a property with tax problems, see our page
+[for property owners](/property-owners). If you're facing foreclosure, see our
+page on [foreclosure options](/foreclosures).
