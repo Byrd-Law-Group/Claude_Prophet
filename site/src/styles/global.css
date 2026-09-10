@@ -1,8 +1,9 @@
 /*
   6170 Properties — global styles.
   Brand palette: deep forest green + warm cream (from the 6170 Properties logo).
-  Dark mode via prefers-color-scheme. System font stacks only (no external
-  JS or webfont requests). To self-host Source Serif 4 later, see README.
+  Single light/cream look in every OS theme (no dark variant). System font
+  stacks only (no external JS or webfont requests). To self-host Source Serif 4
+  later, see README.
 */
 
 :root {
@@ -32,26 +33,14 @@
   --maxw: 72ch;
   --radius: 6px;
 
+  /* The site commits to a single light, cream look in both OS themes, so form
+     controls and scrollbars stay light too. */
+  color-scheme: light;
+
   --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial,
     sans-serif;
   --font-serif: 'Source Serif 4', 'Iowan Old Style', 'Palatino Linotype',
     Palatino, Georgia, 'Times New Roman', serif;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #14271a;
-    --surface: #1e3d2c;
-    --text: #eae4d2;
-    --heading: #f4efe0;
-    --muted: #b3bcae;
-    --accent: #efe8d6; /* cream links/buttons on the dark green ground */
-    --accent-hover: #ffffff;
-    --border: #2f4a37;
-    --focus: #efe8d6;
-    --on-accent: #1e3d2c; /* green text on a cream button */
-    --on-green: #f2ecdb;
-  }
 }
 
 *,
