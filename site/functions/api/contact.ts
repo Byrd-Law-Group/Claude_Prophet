@@ -6,7 +6,7 @@
  *
  * Required environment variables (set in the Cloudflare Pages project):
  *   RESEND_API_KEY   — Resend API key
- *   CONTACT_TO       — recipient, e.g. acquisitions@6170properties.com
+ *   CONTACT_TO       — recipient, e.g. team@6170properties.com
  *   TURNSTILE_SECRET — Cloudflare Turnstile secret key
  * Optional:
  *   CONTACT_FROM     — verified Resend sender
@@ -29,7 +29,7 @@ type PagesFn = (ctx: {
   env: Env;
 }) => Promise<Response> | Response;
 
-const FALLBACK_EMAIL = 'acquisitions@6170properties.com';
+const FALLBACK_EMAIL = 'team@6170properties.com';
 
 function wantsJson(request: Request): boolean {
   const accept = request.headers.get('accept') || '';

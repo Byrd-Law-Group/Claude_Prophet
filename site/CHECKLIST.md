@@ -8,8 +8,8 @@ Do these before pointing the domain at the live site.
       `src/siteData.ts` (`mailingAddress`).
 - [ ] Set the **phone number** — replace `{{PHONE}}` in `src/siteData.ts`
       (`phone`).
-- [ ] Confirm the two email addresses in `src/siteData.ts` are correct
-      (`acquisitions@` and `notices@`).
+- [ ] Confirm the contact email in `src/siteData.ts` is correct
+      (`team@6170properties.com`).
 - [ ] Update the "Last updated" dates in `src/content/pages/privacy.md` and
       `terms.md` if needed.
 
@@ -37,18 +37,18 @@ In **Pages → project → Settings → Variables and Secrets**, add (as secrets
 where noted):
 
 - [ ] `RESEND_API_KEY` (secret)
-- [ ] `CONTACT_TO` = `acquisitions@6170properties.com`
+- [ ] `CONTACT_TO` = `team@6170properties.com`
 - [ ] `TURNSTILE_SECRET` (secret)
 - [ ] `CONTACT_FROM` (optional) if you don't want the default sender
 
 ## 5. Test the form end-to-end
 
 - [ ] Deploy a preview, submit each form (property-owners + contact), and
-      confirm the email arrives at `acquisitions@`.
+      confirm the email arrives at `team@`.
 - [ ] Confirm the honeypot works (a filled `company` field is silently
       dropped) and that Turnstile is required.
 - [ ] Confirm the on-page success message shows, and that a forced failure
-      shows the phone + `acquisitions@` fallback.
+      shows the phone + `team@` fallback.
 
 ## 6. Content review
 
