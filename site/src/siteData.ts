@@ -14,7 +14,7 @@ export const site = {
   url: 'https://6170properties.com',
   // Cloudflare Turnstile site key (public). Replace before launch.
   // The matching secret lives only in the Pages env var TURNSTILE_SECRET.
-  turnstileSiteKey: '{{TURNSTILE_SITE_KEY}}',
+  turnstileSiteKey: '0x4AAAAAAEvRhwy8elNQJZt2',
 } as const;
 
 export type NavItem = { label: string; href: string };
