@@ -63,6 +63,6 @@ function solidPng(width, height, [r, g, b]) {
 }
 
 // Brand forest green (#1E3D2C)
-const green = [0x1e, 0x3d, 0x2c];
+const green = [0x1f, 0x3d, 0x2b];
 writeFileSync(join(outDir, 'og-image.png'), solidPng(1200, 630, green));
 console.log('Wrote public/og-image.png (1200x630 placeholder)');

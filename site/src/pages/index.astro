@@ -39,7 +39,20 @@ const jsonLd = {
 
   <section class="hero">
     <div class="container">
-      <h1>{hero?.heading}</h1>
+      <h1 class="hero-logo">
+        <picture>
+          <source
+            srcset="/6170-primary-cream.svg"
+            media="(prefers-color-scheme: dark)"
+          />
+          <img
+            src="/6170-primary-green-transparent.svg"
+            alt={hero?.heading}
+            width="330"
+            height="321"
+          />
+        </picture>
+      </h1>
       <p class="statement">{hero?.statement}</p>
       <div class="hero-actions">
         {
