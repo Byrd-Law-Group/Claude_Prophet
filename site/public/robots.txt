@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://6170properties.com/sitemap-index.xml

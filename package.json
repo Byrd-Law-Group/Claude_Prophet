@@ -1,50 +1,29 @@
 {
-  "name": "prophet_trader",
+  "name": "pi-practice-agents",
   "version": "1.0.0",
-  "description": "A modular Go trading bot with Alpaca API integration, designed for extensibility and easy integration with AI personas, quant strategies, and MCP controls.",
-  "main": "mcp-server.js",
+  "description": "A personal-injury law practice agent system for Claude Code, with a Telegram front end that routes messages to specialist practice agents.",
   "type": "module",
-  "bin": {
-    "prophet-trader-mcp": "./mcp-server.js"
-  },
   "scripts": {
-    "start": "node mcp-server.js",
     "telegram-bot": "node telegram_bot/bot.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/JakeNesler/Prophet_Trader.git"
+    "url": "git+https://github.com/Byrd-Law-Group/Claude_Prophet.git"
   },
   "keywords": [
-    "mcp",
-    "trading",
-    "alpaca",
-    "ai",
-    "gemini"
+    "claude-code",
+    "legal",
+    "personal-injury",
+    "telegram"
   ],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/JakeNesler/Prophet_Trader/issues"
+    "url": "https://github.com/Byrd-Law-Group/Claude_Prophet/issues"
   },
-  "homepage": "https://github.com/JakeNesler/Prophet_Trader#readme",
+  "homepage": "https://github.com/Byrd-Law-Group/Claude_Prophet#readme",
   "dependencies": {
-    "@google/generative-ai": "^0.24.1",
-    "@modelcontextprotocol/sdk": "^1.22.0",
-    "@xenova/transformers": "^2.17.2",
-    "axios": "^1.13.2",
-    "better-sqlite3": "^12.4.6",
-    "cors": "^2.8.5",
-    "express": "^5.1.0",
-    "node-telegram-bot-api": "^2.1.0",
-    "openai": "^6.9.1",
-    "sqlite-vec": "^0.1.7-alpha.2"
-  },
-  "optionalDependencies": {
-    "sqlite-vec-darwin-arm64": "^0.1.7-alpha.2",
-    "sqlite-vec-darwin-x64": "^0.1.7-alpha.2",
-    "sqlite-vec-linux-x64": "^0.1.7-alpha.2",
-    "sqlite-vec-win32-x64": "^0.1.7-alpha.2"
+    "node-telegram-bot-api": "^2.1.0"
   }
 }

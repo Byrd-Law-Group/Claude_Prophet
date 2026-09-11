@@ -1,1 +1,0 @@
-Use all MCP tools to carry out the trading rules  of this repo, TRADING_RULES.md, Continue trading till 4:01pm and make sure you set wait commands. Do not stop trading under any circumstance. If needed use agents but ultrathink from you is better. agents will waste time and miss opportunities in the market.
