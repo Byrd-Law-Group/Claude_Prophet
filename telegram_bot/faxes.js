@@ -41,6 +41,17 @@ export function markFaxesSeen(ids) {
   persistSeen([...loadSeen(), ...ids]);
 }
 
+/** Returns the ISO timestamp of the last recorded check (manual or
+ * automatic), or null if none has happened yet. */
+export function getLastCheckedAt() {
+  if (!existsSync(SEEN_FILE)) return null;
+  try {
+    return JSON.parse(readFileSync(SEEN_FILE, 'utf8')).lastCheckedAt ?? null;
+  } catch {
+    return null;
+  }
+}
+
 const faxQueryPrompt = (hours) =>
   `Read-only task, nothing to confirm or send: call the RingCentral message-store tool to list inbound fax records (messageType "Fax", direction "Inbound") received in the last ${hours} hours. For each record report exactly these fields, one fax per line, pipe-separated, no headers and no extra commentary: id|fromNumber|receivedISO8601|pageCount|readStatus. Do not open, read, or summarize the fax page content itself — metadata only. If there are none, respond with exactly the single word NONE and nothing else. Do not call any write, send, or confirmation tool for this task.`;
 

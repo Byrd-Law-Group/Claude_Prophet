@@ -2,7 +2,7 @@ import { Bot } from 'node-telegram-bot-api';
 import { runClaude, ALLOWED_AGENTS } from './claude.js';
 import { getState, setState, clearState } from './state.js';
 import { logEvent } from './log.js';
-import { queryRecentFaxes, checkForNewFaxes, markFaxesSeen, formatFax } from './faxes.js';
+import { queryRecentFaxes, checkForNewFaxes, markFaxesSeen, formatFax, getLastCheckedAt } from './faxes.js';
 
 try {
   process.loadEnvFile(new URL('.env', import.meta.url));
@@ -14,11 +14,15 @@ const TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const ALLOWED_USER_ID = process.env.TELEGRAM_ALLOWED_USER_ID
   ? String(process.env.TELEGRAM_ALLOWED_USER_ID)
   : null;
-// How far back each fax check looks, and how often the background poll runs.
-// The lookback is intentionally wider than the poll interval so a missed or
-// slow poll cycle can't cause a fax to fall through the gap.
+// Default lookback for a manual /faxes check, and the floor used for the
+// automatic check below (which pads its own lookback to cover however long
+// it's actually been since the last check, so a missed run or a weekend gap
+// can't let a fax fall through the cracks).
 const FAX_LOOKBACK_HOURS = Number(process.env.FAX_LOOKBACK_HOURS || 48);
-const FAX_POLL_INTERVAL_MS = Number(process.env.FAX_POLL_INTERVAL_MS || 30 * 60 * 1000);
+// The automatic fax check runs once a day, Mon-Fri, at this local hour
+// (24h clock) — e.g. 18 for 6pm.
+const FAX_CHECK_HOUR = Number(process.env.FAX_CHECK_HOUR ?? 18);
+const FAX_CHECK_WEEKDAYS = new Set([1, 2, 3, 4, 5]); // Mon-Fri (0=Sun..6=Sat)
 
 if (!TOKEN) {
   console.error('Missing TELEGRAM_BOT_TOKEN in telegram_bot/.env. Get one from @BotFather on Telegram.');
@@ -67,6 +71,12 @@ function parseLookbackArg(arg) {
   return undefined; // signals "couldn't parse this"
 }
 
+function formatHour(hour24) {
+  const period = hour24 >= 12 ? 'pm' : 'am';
+  const hour12 = ((hour24 + 11) % 12) + 1;
+  return `${hour12}${period}`;
+}
+
 const HELP_TEXT = `Firm assistant bot — talk to it like you would in Claude Code; it routes to the right specialist:
 ${ALLOWED_AGENTS.map((a) => `• ${a}`).join('\n')}
 
@@ -80,7 +90,7 @@ Commands:
 /resume — wake the bot back up
 /help — this message
 
-The bot also checks for new incoming faxes on its own every ${Math.round(FAX_POLL_INTERVAL_MS / 60000)} min and will message you here as soon as one arrives.`;
+The bot also checks for new incoming faxes on its own every weekday at ${formatHour(FAX_CHECK_HOUR)} and will message you here as soon as one arrives.`;
 
 bot.catch((err, ctx) => {
   console.error('handler error', ctx.update.update_id, err);
@@ -220,17 +230,46 @@ bot.on('message', async (ctx) => {
 
 // Background fax check: fires regardless of /pause, since an incoming fax
 // (records, a filing) is a time-sensitive external event, not a chat turn.
-if (ALLOWED_USER_ID) {
-  setInterval(async () => {
+// Runs once a day, Mon-Fri, at FAX_CHECK_HOUR local time (not a fixed
+// interval) — computed via setTimeout since setInterval can't express "next
+// weekday at this hour".
+function msUntilNextFaxCheck(now = new Date()) {
+  const next = new Date(now);
+  next.setHours(FAX_CHECK_HOUR, 0, 0, 0);
+  if (next <= now) next.setDate(next.getDate() + 1);
+  while (!FAX_CHECK_WEEKDAYS.has(next.getDay())) {
+    next.setDate(next.getDate() + 1);
+  }
+  return next.getTime() - now.getTime();
+}
+
+// Pads the lookback to cover however long it's actually been since the last
+// check (e.g. the Fri 6pm -> Mon 6pm weekend gap), never below the
+// configured floor, with a small margin for clock drift or a delayed run.
+function faxCheckLookbackHours() {
+  const lastCheckedAt = getLastCheckedAt();
+  if (!lastCheckedAt) return FAX_LOOKBACK_HOURS;
+  const hoursSince = (Date.now() - new Date(lastCheckedAt).getTime()) / 3600000;
+  return Math.max(FAX_LOOKBACK_HOURS, Math.ceil(hoursSince) + 2);
+}
+
+function scheduleNextFaxCheck() {
+  setTimeout(async () => {
     try {
-      const fresh = await checkForNewFaxes(FAX_LOOKBACK_HOURS);
+      const fresh = await checkForNewFaxes(faxCheckLookbackHours());
       for (const fax of fresh) {
         await bot.api.sendMessage({ chat_id: Number(ALLOWED_USER_ID), text: formatFax(fax) });
       }
     } catch (err) {
       logEvent({ event: 'fax_check_auto', ok: false, error: err.message });
+    } finally {
+      scheduleNextFaxCheck();
     }
-  }, FAX_POLL_INTERVAL_MS);
+  }, msUntilNextFaxCheck());
+}
+
+if (ALLOWED_USER_ID) {
+  scheduleNextFaxCheck();
 } else {
   console.log('Skipping automatic fax checks: TELEGRAM_ALLOWED_USER_ID is not set yet.');
 }
