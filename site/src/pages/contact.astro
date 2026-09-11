@@ -2,7 +2,7 @@
 import { getEntry, render } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ContactForm from '../components/ContactForm.astro';
-import { site } from '../siteData';
+import { site, hasMailingAddress, hasPhone } from '../siteData';
 
 const entry = await getEntry('pages', 'contact');
 if (!entry) throw new Error('Missing content: src/content/pages/contact.md');
@@ -16,12 +16,18 @@ const { Content } = await render(entry);
       <Content />
 
       <h2>Our details</h2>
-      <p class="footer-legal">
+      <address class="footer-legal">
         <strong>{site.legalName}</strong><br />
         {site.entityLine}<br />
-        {site.mailingAddress}<br />
-        <a href={`tel:${site.phone}`}>{site.phone}</a>
-      </p>
+        {hasMailingAddress && <>{site.mailingAddress}<br /></>}
+        <a href={`mailto:${site.email}`}>{site.email}</a>
+        {hasPhone && (
+          <>
+            <br />
+            <a href={`tel:${site.phone}`}>{site.phone}</a>
+          </>
+        )}
+      </address>
 
       <h2>Send us a message</h2>
       <ContactForm variant="contact" formName="Contact form" />

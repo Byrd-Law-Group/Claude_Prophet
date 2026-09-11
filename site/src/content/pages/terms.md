@@ -32,13 +32,22 @@ not create any obligation for you or for us until a written agreement is signed.
 ## Third-party links and services
 
 This site uses Cloudflare for hosting and spam protection and an email provider
-to deliver form submissions to us. Links to third-party websites (such as county
-offices) are provided for convenience; we are not responsible for their content.
+to deliver form submissions to us. See our [Privacy Policy](/privacy) and
+[Cookies Policy](/cookies) for how we handle your information. Links to
+third-party websites (such as county offices) are provided for convenience; we
+are not responsible for their content.
 
 ## Limitation of liability
 
 To the fullest extent permitted by law, 6170 Properties LLC is not liable for
 any damages arising from your use of this website.
+
+## Governing law
+
+These terms and your use of this website are governed by the laws of the State
+of Ohio, without regard to its conflict-of-laws rules. Any dispute relating to
+this website will be handled in the state or federal courts located in
+Montgomery County, Ohio, to the extent permitted by law.
 
 ## Contact
 

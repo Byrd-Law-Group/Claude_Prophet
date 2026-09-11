@@ -4,14 +4,20 @@ Do these before pointing the domain at the live site.
 
 ## 1. Fill in the placeholders
 
+> Until these are filled in, the site **hides** the phone and mailing-address
+> lines entirely (in the footer, the Contact page, the form success/error
+> panels, and the JSON-LD) rather than printing a raw `{{...}}`. Email stays the
+> always-visible contact channel. Set the real values to make phone/address
+> appear. See `hasPhone` / `hasMailingAddress` in `src/siteData.ts`.
+
 - [ ] Set the **mailing address** — replace `{{MAILING_ADDRESS}}` in
       `src/siteData.ts` (`mailingAddress`).
 - [ ] Set the **phone number** — replace `{{PHONE}}` in `src/siteData.ts`
       (`phone`).
 - [ ] Confirm the contact email in `src/siteData.ts` is correct
       (`team@6170properties.com`).
-- [ ] Update the "Last updated" dates in `src/content/pages/privacy.md` and
-      `terms.md` if needed.
+- [ ] Update the "Last updated" dates in `src/content/pages/privacy.md`,
+      `terms.md`, and `cookies.md` if needed.
 
 ## 2. Cloudflare Turnstile
 
