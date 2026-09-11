@@ -1,27 +1,39 @@
 ---
 import { getEntry } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { site } from '../siteData';
+import { site, hasMailingAddress, hasPhone } from '../siteData';
 
 const entry = await getEntry('pages', 'home');
 if (!entry) throw new Error('Missing content: src/content/pages/home.md');
 const { title, description, hero, blocks, whoWeAre } = entry.data;
 
-// JSON-LD LocalBusiness / RealEstateAgent schema for the home page.
+// JSON-LD LocalBusiness / RealEstateAgent schema for the home page. Only emit
+// telephone / postal address once real values replace the placeholders, so the
+// structured data never advertises a fake phone or address.
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'RealEstateAgent',
   name: site.legalName,
   url: site.url,
   email: site.email,
-  telephone: site.phone,
   image: new URL('/og-image.png', site.url).href,
-  address: {
-    '@type': 'PostalAddress',
-    streetAddress: site.mailingAddress,
-    addressRegion: 'OH',
-    addressCountry: 'US',
-  },
+  ...(hasPhone ? { telephone: site.phone } : {}),
+  ...(hasMailingAddress
+    ? {
+        address: {
+          '@type': 'PostalAddress',
+          streetAddress: site.mailingAddress,
+          addressRegion: 'OH',
+          addressCountry: 'US',
+        },
+      }
+    : {
+        address: {
+          '@type': 'PostalAddress',
+          addressRegion: 'OH',
+          addressCountry: 'US',
+        },
+      }),
   areaServed: {
     '@type': 'AdministrativeArea',
     name: site.areaServed,

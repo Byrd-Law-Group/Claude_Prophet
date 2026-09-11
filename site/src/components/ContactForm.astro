@@ -1,5 +1,5 @@
 ---
-import { site } from '../siteData';
+import { site, hasPhone } from '../siteData';
 
 interface Props {
   /** 'owners' = name/phone/address/best time/message; 'contact' = name/email/message. */
@@ -19,21 +19,32 @@ const id = `form-${variant}`;
     class="form-status form-status--success"
     id={`${id}-success`}
     role="status"
+    tabindex="-1"
     hidden
   >
     <p><strong>Thank you — your message has been sent.</strong></p>
     <p>
-      We'll be in touch soon. If you'd like to reach us right away, call
-      <a href={`tel:${site.phone}`}>{site.phone}</a> or email
-      <a href={`mailto:${site.email}`}>{site.email}</a>.
+      We'll be in touch soon. If you'd like to reach us right away,
+      {hasPhone && (
+        <>
+          call <a href={`tel:${site.phone}`}>{site.phone}</a> or
+        </>
+      )}
+      email <a href={`mailto:${site.email}`}>{site.email}</a>.
     </p>
   </div>
 
   <div class="form-status form-status--error" id={`${id}-error`} role="alert" hidden>
     <p><strong>Sorry — we couldn't send your message.</strong></p>
     <p>
-      Please call <a href={`tel:${site.phone}`}>{site.phone}</a> or email
-      <a href={`mailto:${site.email}`}>{site.email}</a> and we'll help you directly.
+      Please
+      {hasPhone && (
+        <>
+          call <a href={`tel:${site.phone}`}>{site.phone}</a> or
+        </>
+      )}
+      email <a href={`mailto:${site.email}`}>{site.email}</a> and we'll help you
+      directly.
     </p>
   </div>
 
